@@ -1,1 +1,0 @@
-lcmd = "/tmp/file2chan/cmd"
