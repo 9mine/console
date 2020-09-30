@@ -7,7 +7,7 @@ minetest.register_chatcommand("ls", {
 
 minetest.register_chatcommand("cd", {
     func = function(name, params)
-        cd(name, params)
+        change_directory(name, params)
         return true
     end
 })
