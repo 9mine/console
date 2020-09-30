@@ -18,4 +18,11 @@ minetest.register_on_chat_message(function(name, message)
         minetest.chat_send_player(name, response)
         return true
     end
+
+    if string.match(message, "^cd") then
+        local destination = string.match(message, "[^(^cd )]+$")
+        print("destination is: " .. destination)
+        change_directory(name, destination)
+        return true
+    end
 end)
