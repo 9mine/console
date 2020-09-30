@@ -24,4 +24,20 @@ minetest.register_on_chat_message(function(name, message)
         change_directory(name, destination)
         return true
     end
+
+    if string.match(message, "^[%a%d]+") then
+        local command = string.match(message, "^[%a%d]+")
+        if string.match(tostring(console_settings:get("commands")), command) then
+            local node_pos = nmine.node_pos_near(name)
+            local host_info = platforms.get_host_info(node_pos)
+            local result = platforms.execute_cmd(host_info,
+                                                 console_settings:get("lcmd"),
+                                                 message)
+            minetest.chat_send_player(name, result .. "\n")
+            return true
+        else
+            return false
+        end
+    end
+
 end)
