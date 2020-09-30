@@ -5,6 +5,13 @@ minetest.register_chatcommand("ls", {
     end
 })
 
+minetest.register_chatcommand("cd", {
+    func = function(name, params)
+        cd(name, params)
+        return true
+    end
+})
+
 minetest.register_on_chat_message(function(name, message)
     if string.match(message, "^ls") then
         local response = ls(name, message)
