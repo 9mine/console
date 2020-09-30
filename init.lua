@@ -1,0 +1,6 @@
+print("Console mod is loading . . .  ")
+local path = minetest.get_modpath("console")
+dofile(path .. "/help_func.lua")
+dofile(path .. "/config.lua")
+dofile(path .. "/commands.lua")
+print("Console mod successfully loaded.")
