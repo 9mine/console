@@ -26,7 +26,7 @@ minetest.register_on_chat_message(function(name, message)
     end
 
     if string.match(message, "^[%a%d]+") then
-        local command = string.match(message, "^[%a%d]+")
+        local command = string.match(message, "^[%a][%a%d/]+")
         if string.match(tostring(console_settings:get("commands")), command) then
             local node_pos = nmine.node_pos_near(name)
             local host_info = platforms.get_host_info(node_pos)
