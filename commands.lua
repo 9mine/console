@@ -34,9 +34,10 @@ minetest.register_on_chat_message(function(name, message)
                                                  console_settings:get("lcmd"),
                                                  message)
             minetest.chat_send_player(name, result .. "\n")
+
             local old_listing = platforms.storage_get(node_pos, "listing")
-            local new_listing = get_dir_listing(host_info)
-            nmine.compare_listings(old_listing, new_listing)
+            local new_listing = get_dir(host_info)
+            compare_listings(node_pos, old_listing, new_listing)
             return true
         else
             return false
