@@ -29,11 +29,14 @@ minetest.register_on_chat_message(function(name, message)
         local command = string.match(message, "^[%a][%a%d/]+")
         if string.match(tostring(console_settings:get("commands")), command) then
             local node_pos = nmine.node_pos_near(name)
-            local host_info = platforms.get_host_info(node_pos)
+            local host_info = platforms.storage_get(node_pos, "host_info")
             local result = platforms.execute_cmd(host_info,
                                                  console_settings:get("lcmd"),
                                                  message)
             minetest.chat_send_player(name, result .. "\n")
+            local old_listing = platforms.storage_get(node_pos, "listing")
+            local new_listing = get_dir_listing(host_info)
+            nmine.compare_listings(old_listing, new_listing)
             return true
         else
             return false
