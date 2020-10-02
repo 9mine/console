@@ -15,8 +15,7 @@ minetest.register_chatcommand("cd", {
 minetest.register_chatcommand("help", {
     func = function(name, params)
         spawn_help(name)
-        local response = "Now qubes will be spawned"
-        return true, response
+        return true
     end
 })
 
