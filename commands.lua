@@ -12,6 +12,15 @@ minetest.register_chatcommand("cd", {
     end
 })
 
+minetest.register_chatcommand("help", {
+    func = function(name, params)
+        spawn_help(name)
+        local response = "Now qubes will be spawned"
+        return true, response
+    end
+})
+
+
 minetest.register_on_chat_message(function(name, message)
     if string.match(message, "^ls") then
         local response = ls(name, message)
