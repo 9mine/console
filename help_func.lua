@@ -18,7 +18,7 @@ stop = function(entity, p)
     end
 end
 
-spawn_help = function(name)
+spawn_matched = function(name, matched)
     local player = minetest.get_player_by_name(name)
 
     local position = player:get_pos()
@@ -32,19 +32,20 @@ spawn_help = function(name)
 
     local rotated_look_dir = vector.rotate(look_dir,
                                            {x = 0, y = math.pi / 2, z = 0})
-    local help = {"HELP", "HILFEN"}
-    for k, v in ipairs(help) do
+
+    for k, file in pairs(matched) do
         local left_right_direction = vector.multiply(rotated_look_dir,
                                                      math.random(-4, 4))
         local final_position = vector.add(destination, left_right_direction)
-        local entity = minetest.add_entity(
-                           {
-                x = final_position.x,
-                y = final_position.y + 10,
-                z = final_position.z
-            }, "directories:file")
+        final_position.y = final_position.y + 10
+        local entity = minetest.add_entity(final_position, file.type == 128 and
+                                               "directories:dir" or
+                                               "directories:file")
+
+        entity:set_nametag_attributes({color = "black", text = file.path})
+        entity:set_armor_groups({immortal = 0})
         entity:set_properties({physical = false})
-        entity:set_nametag_attributes({color = "black", text = v})
+        entity:get_luaentity().path = file.path
         entity:set_velocity({x = 0, y = -9.81, z = 0})
         minetest.after(0.05, stop, entity, position.y)
     end

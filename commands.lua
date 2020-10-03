@@ -15,17 +15,19 @@ minetest.register_chatcommand("cd", {
 minetest.register_chatcommand("whereis", {
     func = function(name, params)
         local response = ""
+        local matched = {}
         local sd_platforms = minetest.deserialize(sd:get_string("platforms"))
         for k, v in pairs(sd_platforms) do
-            for i, j in pairs(v.listing) do 
+            for i, j in pairs(v.listing) do
                 if string.match(i, params) then
+                    table.insert(matched, j)
                     print(j.path)
                     response = response .. j.path .. "\n"
                 end
             end
         end
-        spawn_help(name)
-        return true, response
+        spawn_matched(name, matched)
+        return true, response .. "\n"
     end
 })
 
