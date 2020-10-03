@@ -46,14 +46,14 @@ spawn_matched = function(name, matched)
         table.remove(free_space, index)
         local final_position = vector.add(destination, left_right_direction)
         final_position.y = final_position.y + 10
-        local entity = minetest.add_entity(final_position, file.type == 128 and
+        local entity = minetest.add_entity(final_position, file.j.type == 128 and
                                                "directories:dir" or
                                                "directories:file")
-
-        entity:set_nametag_attributes({color = "black", text = file.path})
+        local name = file.v.host_info.host .. ":" .. file.v.host_info.port .. "\n" .. file.j.path 
+        entity:set_nametag_attributes({color = "black", text = name})
         entity:set_armor_groups({immortal = 0})
         entity:set_properties({physical = false})
-        entity:get_luaentity().path = file.path
+        entity:get_luaentity().path = file.j.path
         entity:set_velocity({x = 0, y = -9.81, z = 0})
         minetest.after(0.05, stop, entity, position.y)
     end

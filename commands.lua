@@ -20,7 +20,7 @@ minetest.register_chatcommand("whereis", {
         for k, v in pairs(sd_platforms) do
             for i, j in pairs(v.listing) do
                 if string.match(i, params) then
-                    table.insert(matched, j)
+                    table.insert(matched, {j = j, v = v})
                     print(j.path)
                     response = response .. j.path .. "\n"
                 end
