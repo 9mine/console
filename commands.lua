@@ -21,8 +21,7 @@ minetest.register_chatcommand("whereis", {
             for i, j in pairs(v.listing) do
                 if string.match(i, params) then
                     table.insert(matched, {j = j, v = v})
-                    print(j.path)
-                    response = response .. j.path .. "\n"
+                    response = response .. v.host_info.host .. ":" .. v.host_info.port .. " " .. j.path .. "\n"
                 end
             end
         end
