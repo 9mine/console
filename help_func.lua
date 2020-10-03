@@ -37,10 +37,10 @@ spawn_matched = function(name, matched)
         table.insert(free_space, i)
     end
     free_space = nmine.shuffle(free_space)
-    
+    local count = 0
     for k, file in pairs(matched) do
         local index, slot = next(free_space)
-        if not slot then return end
+        if (not slot) or (count == 9) then return end
         local left_right_direction = vector.multiply(rotated_look_dir,
                                                      slot)
         table.remove(free_space, index)
@@ -56,6 +56,7 @@ spawn_matched = function(name, matched)
         entity:get_luaentity().path = file.j.path
         entity:set_velocity({x = 0, y = -9.81, z = 0})
         minetest.after(0.05, stop, entity, position.y)
+        count = count + 1
     end
 
 end
