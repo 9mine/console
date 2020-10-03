@@ -14,7 +14,7 @@ stop = function(entity, p)
     if (y - p) < 3 then
         entity:set_velocity({x = 0, y = 0, z = 0})
     else
-        minetest.after(0.1, stop, entity, p)
+        minetest.after(0.05, stop, entity, p)
     end
 end
 
@@ -46,7 +46,7 @@ spawn_help = function(name)
         entity:set_properties({physical = false})
         entity:set_nametag_attributes({color = "black", text = v})
         entity:set_velocity({x = 0, y = -9.81, z = 0})
-        minetest.after(0.1, stop, entity, position.y)
+        minetest.after(0.05, stop, entity, position.y)
     end
 
 end

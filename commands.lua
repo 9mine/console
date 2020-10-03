@@ -12,13 +12,22 @@ minetest.register_chatcommand("cd", {
     end
 })
 
-minetest.register_chatcommand("help", {
+minetest.register_chatcommand("whereis", {
     func = function(name, params)
+        local response = ""
+        local sd_platforms = minetest.deserialize(sd:get_string("platforms"))
+        for k, v in pairs(sd_platforms) do
+            for i, j in pairs(v.listing) do 
+                if string.match(i, params) then
+                    print(j.path)
+                    response = response .. j.path .. "\n"
+                end
+            end
+        end
         spawn_help(name)
-        return true
+        return true, response
     end
 })
-
 
 minetest.register_on_chat_message(function(name, message)
     if string.match(message, "^ls") then
