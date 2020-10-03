@@ -32,10 +32,18 @@ spawn_matched = function(name, matched)
 
     local rotated_look_dir = vector.rotate(look_dir,
                                            {x = 0, y = math.pi / 2, z = 0})
-
+    local free_space = {}
+    for i = -6, 6 do 
+        table.insert(free_space, i)
+    end
+    free_space = nmine.shuffle(free_space)
+    
     for k, file in pairs(matched) do
+        local index, slot = next(free_space)
+        if not slot then return end
         local left_right_direction = vector.multiply(rotated_look_dir,
-                                                     math.random(-4, 4))
+                                                     slot)
+        table.remove(free_space, index)
         local final_position = vector.add(destination, left_right_direction)
         final_position.y = final_position.y + 10
         local entity = minetest.add_entity(final_position, file.type == 128 and
