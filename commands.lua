@@ -40,6 +40,7 @@ minetest.register_on_chat_message(function(name, message)
         end
         if string.match(message, "^ls | grep") then
             handle_regex(name, message)
+            return true 
         else
             local response = ls(name, message)
             minetest.chat_send_player(name, response)

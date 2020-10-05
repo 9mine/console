@@ -79,21 +79,29 @@ spawn_matched = function(name, matched)
     end
 
 end
-remove_file = function(file) file:remove() end
+
+shadow_file = function(file, pos)
+
+    file:set_acceleration({x = 0, y = 0, z = 0})
+    file:set_pos(pos)
+end
+
+stop = function(file, pos)
+    file:set_properties({is_visible = false})
+    file:set_acceleration({x = 0, y = -9.81, z = 0})
+    pos.y = pos.y + 10
+    file:set_pos(pos)
+end
 reset_regex = function(name)
     local node_pos = nmine.node_pos_near(name)
     local listing = platforms.storage_get(node_pos, "listing")
     for name, file in pairs(listing) do
         local p = file.pos
-        p.y = file.pos.y + 1
-        local entities = minetest.get_objects_inside_radius(p, 1)
-        while next(entities) ~= nil do
-            local x, y = next(entities)
-            if y:is_player() then
-            else
-                y:set_properties({is_visible = true})
-            end
-            table.remove(entities, x)
+        p.y = file.pos.y + 11
+        local e = minetest.get_objects_inside_radius(p, 1)[1]
+        if e then
+            e:set_properties({is_visible = true, physical = true})
+            e:set_acceleration({x = 0, y = -9.81, z = 0})
         end
     end
 end
@@ -106,16 +114,11 @@ handle_regex = function(name, message)
     for name, file in pairs(listing) do
         if not string.match(name, regex) then
             local p = file.pos
-            p.y = file.pos.y + 1
-            local entities = minetest.get_objects_inside_radius(p, 1)
-            while next(entities) ~= nil do
-                local x, y = next(entities)
-                if y:is_player() then
-                else
-                    y:set_properties({is_visible = false})
-                end
-                table.remove(entities, x)
-            end
+            p.y = file.pos.y + 1.5
+            local e = minetest.get_objects_inside_radius(p, 1)[1]
+            e:set_acceleration({x = 0, y = 9.81, z = 0})
+            minetest.after(1, stop, e, file.pos)
+            minetest.after(2, shadow_file, e, file.pos)
         end
     end
 end
