@@ -58,7 +58,6 @@ spawn_matched = function(name, matched)
         entity:get_luaentity().on_punch =
             function(self, puncher)
                 for k, v in pairs(remove_line) do
-                    print("DUMP REMOVE_LINE: " .. dump(v))
                     v.y = v.y - 10
                     local objects = minetest.get_objects_inside_radius(v, 4)
                     while next(objects) ~= nil do
@@ -81,3 +80,27 @@ spawn_matched = function(name, matched)
 
 end
 
+handle_regex = function(name, message)
+    local regex = string.gsub(message, "ls | grep ", "")
+    local node_pos = nmine.node_pos_near(name)
+    local listing = platforms.storage_get(node_pos, "listing")
+    print("Listing is: " .. dump(listing))
+    print(regex)
+
+    for name, file in pairs(listing) do
+        if not string.match(name, regex) then
+            local p = file.pos
+            p.y = file.pos.y + 1
+            local entities = minetest.get_objects_inside_radius(p, 1)
+            while next(entities) ~= nil do
+                local x, y = next(entities)
+                if y:is_player() then
+                else
+                    y:set_properties({is_visible = false})
+                end
+                table.remove(entities, x)
+            end
+        end
+
+    end
+end

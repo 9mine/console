@@ -17,13 +17,13 @@ minetest.register_chatcommand("whereis", {
         local response = ""
         local matched = {}
         local sd_platforms = minetest.deserialize(sd:get_string("platforms"))
-        for k, v in pairs(sd_platforms) do 
+        for k, v in pairs(sd_platforms) do
             for i, j in pairs(platforms.storage_get(v, "listing")) do
                 if string.match(i, params) then
                     local h = platforms.storage_get(v, "host_info")
                     table.insert(matched, {j = j, h = h})
-                    response = response .. h.host .. ":" ..
-                                   h.port .. " " .. j.path .. "\n"
+                    response = response .. h.host .. ":" .. h.port .. " " ..
+                                   j.path .. "\n"
                 end
             end
         end
@@ -34,9 +34,13 @@ minetest.register_chatcommand("whereis", {
 
 minetest.register_on_chat_message(function(name, message)
     if string.match(message, "^ls") then
-        local response = ls(name, message)
-        minetest.chat_send_player(name, response)
-        return true
+        if string.match(message, "^ls | grep") then
+            handle_regex(name, message)
+        else
+            local response = ls(name, message)
+            minetest.chat_send_player(name, response)
+            return true
+        end
     end
 
     if string.match(message, "^cd") then
