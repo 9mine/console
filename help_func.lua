@@ -79,13 +79,29 @@ spawn_matched = function(name, matched)
     end
 
 end
+remove_file = function(file) file:remove() end
+reset_regex = function(name)
+    local node_pos = nmine.node_pos_near(name)
+    local listing = platforms.storage_get(node_pos, "listing")
+    for name, file in pairs(listing) do
+        local p = file.pos
+        p.y = file.pos.y + 1
+        local entities = minetest.get_objects_inside_radius(p, 1)
+        while next(entities) ~= nil do
+            local x, y = next(entities)
+            if y:is_player() then
+            else
+                y:set_properties({is_visible = true})
+            end
+            table.remove(entities, x)
+        end
+    end
+end
 
 handle_regex = function(name, message)
     local regex = string.gsub(message, "ls | grep ", "")
     local node_pos = nmine.node_pos_near(name)
     local listing = platforms.storage_get(node_pos, "listing")
-    print("Listing is: " .. dump(listing))
-    print(regex)
 
     for name, file in pairs(listing) do
         if not string.match(name, regex) then
@@ -101,6 +117,5 @@ handle_regex = function(name, message)
                 table.remove(entities, x)
             end
         end
-
     end
 end

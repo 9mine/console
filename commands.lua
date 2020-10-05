@@ -34,6 +34,10 @@ minetest.register_chatcommand("whereis", {
 
 minetest.register_on_chat_message(function(name, message)
     if string.match(message, "^ls") then
+        if string.match(message, "^ls$")then
+            reset_regex(name, message)
+            return true
+        end
         if string.match(message, "^ls | grep") then
             handle_regex(name, message)
         else
