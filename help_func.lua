@@ -9,6 +9,32 @@ end
 
 cd = function(name, message) change_directory(name, message) end
 
+parse_cmd_src_dst = function(message)
+    local t = {}
+    for str in string.gmatch(message, "[^ ]+") do table.insert(t, str) end
+    local cmd = t[1]
+    local src = t[2]
+    local dst = t[3]
+    return cmd, src, dst
+end
+
+get_src_entity = function(name, src)
+    local node_pos = nmine.node_pos_near(name)
+    local listing = platforms.storage_get(node_pos, "listing")
+    local file_name = string.match(string.match(src, "/?%a+/?$"), "%a+")
+    if file_name == nil then return end
+    if listing[file_name] ~= nil then
+        local p = listing[file_name].pos
+        p.y = listing[file_name].pos.y + 1.5
+        local e = minetest.get_objects_inside_radius(p, 1)[1]
+        return e, file_name
+    else
+        return
+    end
+end
+
+get_dst_pos = function(dst) end
+
 stop = function(entity, p)
     local y = entity:get_pos().y
     if (y - p) < 3 then
