@@ -21,19 +21,57 @@ end
 get_src_entity = function(name, src)
     local node_pos = nmine.node_pos_near(name)
     local listing = platforms.storage_get(node_pos, "listing")
+    local src_path = platforms.storage_get(node_pos, "host_info").path
     local file_name = string.match(string.match(src, "/?%a+/?$"), "%a+")
     if file_name == nil then return end
     if listing[file_name] ~= nil then
         local p = listing[file_name].pos
         p.y = listing[file_name].pos.y + 1.5
-        local e = minetest.get_objects_inside_radius(p, 1)[1]
-        return e, file_name
+        local entity = minetest.get_objects_inside_radius(p, 1)[1]
+        return listing[file_name].pos, entity, file_name,
+               listing[file_name].type, src_path
     else
         return
     end
 end
 
-get_dst_pos = function(dst) end
+dst_exists = function(dst, src_path, type)
+    local dst_dir = nil
+    local path = dst
+
+    if not string.match(dst, "^/") then
+        path = src_path == "/" and src_path .. dst or src_path .. "/" .. dst
+    end
+    if string.match(path, "^/$") then
+        local sd_platforms = minetest.deserialize(sd:get_string("platforms"))
+        for _, plt_pos in pairs(sd_platforms) do
+            local host_info = platforms.storage_get(plt_pos, "host_info")
+            if host_info.path == "/" then return plt_pos end
+        end
+    end
+
+    if string.match(path, "/$") then dst_dir = string.match(path, ".*[^/]") end
+    if string.match(path, "/%a+$") then
+        dst_dir = string.match(string.match(path, ".*/"), ".*[^/]")
+    end
+    local sd_platforms = minetest.deserialize(sd:get_string("platforms"))
+    for _, plt_pos in pairs(sd_platforms) do
+        local host_info = platforms.storage_get(plt_pos, "host_info")
+        if host_info.path == dst_dir then return plt_pos end
+    end
+end
+
+get_dst_pos = function(plt_pos, file_name)
+    if platforms.storage_get(plt_pos, "listing")[file_name] then
+        return nil
+    else
+        local empty_slots = platforms.storage_get(plt_pos, "empty_slots")
+        local index, empty_slot = next(empty_slots)
+        table.remove(empty_slots, index)
+        platforms.storage_set(plt_pos, "empty_slots", empty_slots)
+        return empty_slot
+    end
+end
 
 stop = function(entity, p)
     local y = entity:get_pos().y

@@ -35,12 +35,19 @@ minetest.register_chatcommand("whereis", {
 minetest.register_on_chat_message(function(name, message)
     if string.match(message, "^cp") or string.match(message, "^mv") then
         local cmd, src, dst = parse_cmd_src_dst(message)
-        local entity, file_name = get_src_entity(name, src)
+        local ent_pos, entity, file_name, type, src_path =
+            get_src_entity(name, src)
         if not entity then
             minetest.chat_send_player(name, "no matching entity")
             return true
         end
-        local dst_pos = get_dst_pos()
+        local plt_pos = dst_exists(dst, src_path, type)
+        local dst_pos = get_dst_pos(plt_pos, file_name)
+        if dst_pos ~= nil then
+            print("animate file")
+        else
+            print("process file in place")
+        end
         return true
     end
 
