@@ -60,7 +60,9 @@ dst_exists = function(dst, src_path, type)
         end
     end
     -- if trailing shash, remove
-    if string.match(path, "/$") then dst_dir = string.match(path, ".*[^/]") end
+    if string.match(path, "/$") then
+        dst_dir = string.match(path, ".*[^/]")
+    end
 
     -- if path ends with name, check is exists and is it dir or file
     if string.match(path, "/%a+$") then
@@ -109,14 +111,12 @@ end
 -- at destination or give next empty slot if not
 get_dst_pos = function(plt_pos, file_name)
     if platforms.storage_get(plt_pos, "listing") then
-        print("YOU ARE HERE")
-        return platforms.storage_get(plt_pos, "listing")[file_name]
-    else
-        local empty_slots = platforms.storage_get(plt_pos, "empty_slots")
-        local index, empty_slot = next(empty_slots)
-        table.remove(empty_slots, index)
-        platforms.storage_set(plt_pos, "empty_slots", empty_slots)
-        print("DUMP EMPTY SLOT:" .. dump(empty_slot))
-        return empty_slot
+        local file_pos = platforms.storage_get(plt_pos, "listing")[file_name]
+        if file_pos then return file_pos.pos end
     end
+    local empty_slots = platforms.storage_get(plt_pos, "empty_slots")
+    local index, empty_slot = next(empty_slots)
+    table.remove(empty_slots, index)
+    platforms.storage_set(plt_pos, "empty_slots", empty_slots)
+    return empty_slot
 end

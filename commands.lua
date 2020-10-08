@@ -54,11 +54,19 @@ minetest.register_on_chat_message(function(name, message)
 
         local dst_pos = get_dst_pos(plt_pos, file_name)
 
+        local fentity = nil
         if dst_pos ~= nil then
-            print("animate file")
+            print("animate file to dst_pos: " .. dump(dst_pos))
 
             local direction = vector.direction(ent_pos, dst_pos)
             local fast_direction = vector.multiply(direction, 50)
+
+            if cmd == "cp" then
+                fentity = minetest.add_entity(ent_pos, entity:get_entity_name())
+                fentity:set_nametag_attributes(entity:get_nametag_attributes())
+                fentity:set_properties(entity:get_properties())
+                entity = fentity
+            end
 
             entity:set_velocity({x = 0, y = 10, z = 0})
             entity:set_acceleration(fast_direction)
